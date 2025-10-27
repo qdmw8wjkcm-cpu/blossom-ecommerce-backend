@@ -1,0 +1,93 @@
+### Register
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "tefis",
+  "lastname": "Castro",
+  "password": "t3221asd31as",
+  "email": "tefis5@gmail.com",
+  "document": "215151515",
+  "phoneNumber": "21251515",
+  "city": "Sogamoso",
+  "country": "Colombia",
+  "favoriteCategories": [],
+  "favoriteProducts": []
+}
+
+### Get users
+POST http://localhost:8080/api/users?page=0&size=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWZpczJAZ21haWwuY29tIiwiaWQiOiJiNjI4Zjk5YS1iMzJlLTQ5NjQtOGQyOS04MDE0YTdjMTNhYTIiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc2MTU3NzA2MCwiZXhwIjoxNzYxNTc3OTYwfQ.DjQjrdBueFnhQ1OLbdHFEqdvW6NzxChu-GnuZYn7sus
+
+
+### Customer Login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "tefis2@gmail.com",
+  "password": "t13221asd31as"
+}
+
+
+### Admin Login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "tefis2@gmail.com",
+  "password": "t13221asd31as"
+}
+
+<> 2025-10-27T102115.200.json
+
+
+### Get User
+GET http://localhost:8080/api/users/b628f99a-b32e-4964-8d29-8014a7c13aa2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWZpczJAZ21haWwuY29tIiwiaWQiOiJiNjI4Zjk5YS1iMzJlLTQ5NjQtOGQyOS04MDE0YTdjMTNhYTIiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc2MTU3NzM1NSwiZXhwIjoxNzYxNTc4MjU1fQ.Qmk9ttOK5SPZ-CVLnFmdA0LgxUZANmL-iUXOVtnsd5A
+
+### New Product
+POST http://localhost:8080/api/products
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWZpczJAZ21haWwuY29tIiwiaWQiOiJiNjI4Zjk5YS1iMzJlLTQ5NjQtOGQyOS04MDE0YTdjMTNhYTIiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc2MTU3ODAwNCwiZXhwIjoxNzYxNTc4OTA0fQ.-JeTcLwOaSdTH2i3ib29pXGyw6wTcPeq5xveHKAdT9o
+Content-Type: application/json
+
+{
+  "title": "Helado cremoso",
+  "description": "Helado de fresa",
+  "price": 20000,
+  "categoryId": "1d8f1d5d-44ca-4dd6-a9f3-8e89554f4a8e5",
+  "stock": 20,
+  "country": "Colombia",
+  "city": "Bogotá"
+}
+
+### get products
+GET http://localhost:8080/api/products/
+Authorization: Berarer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWZpczJAZ21haWwuY29tIiwiaWQiOiJiNjI4Zjk5YS1iMzJlLTQ5NjQtOGQyOS04MDE0YTdjMTNhYTIiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc2MTU3ODAwNCwiZXhwIjoxNzYxNTc4OTA0fQ.-JeTcLwOaSdTH2i3ib29pXGyw6wTcPeq5xveHKAdT9o
+
+### New Order
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZWZpczJAZ21haWwuY29tIiwiaWQiOiJiNjI4Zjk5YS1iMzJlLTQ5NjQtOGQyOS04MDE0YTdjMTNhYTIiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc2MTU3ODg0OCwiZXhwIjoxNzYxNTc5NzQ4fQ._YC_Y-PnWavZyIf5DCjw31EYefxdlWyO0b1gswaP204
+
+{
+  "userId": "58c7230d-db06-455d-8209-f5f2ba88156d",
+  "paymentMethod": "PSE",
+  "items": [{
+    "productId": "3f06ad76-ef55-4d41-8cf1-99243fbe6a4f",
+    "title": "Helado",
+    "price": 20000,
+    "stock": 3
+  }]
+}
+
+### Get Order
+GET http://localhost:${PORT:8080}/api/orders/{{orderId}}
+
+###
+POST http://localhost:8080/api/orders?
+    page={{$random.integer(100)}}&
+    size={{$random.integer(100)}}&
+    userId={{$random.uuid}}&
+    status={{$random.alphanumeric(8)}}
+    Content-Type: application/json
