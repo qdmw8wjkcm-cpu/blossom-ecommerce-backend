@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFacto
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
-import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,41 +17,53 @@ import org.springframework.context.annotation.Configuration;
 @EnableRabbit
 public class RabbitConfig {
 
-    public static final String EXCHANGE = "payments.x";
-    public static final String RK_REQUESTED  = "payment.requested";
-    public static final String RK_PROCESSED  = "payment.processed";
-    public static final String Q_REQUESTED   = "payment.requested.q";
-    public static final String Q_PROCESSED   = "payment.processed.q";
+    public static final String EXCHANGE     = "payments.x";
+    public static final String RK_REQUESTED = "payment.requested";
+    public static final String RK_PROCESSED = "payment.processed";
+    public static final String Q_REQUESTED  = "payment.requested.q";
+    public static final String Q_PROCESSED  = "payment.processed.q";
 
     @Bean
-    public Exchange paymentsExchange() {
-        return ExchangeBuilder.topicExchange(EXCHANGE).durable(true).build();
-    }
-
-    @Bean public Queue paymentRequestedQueue() { return QueueBuilder.durable(Q_REQUESTED).build(); }
-    @Bean public Queue paymentProcessedQueue() { return QueueBuilder.durable(Q_PROCESSED).build(); }
-
-    @Bean
-    public Binding bindRequested(Queue paymentRequestedQueue, Exchange paymentsExchange) {
-        return BindingBuilder.bind(paymentRequestedQueue).to(paymentsExchange).with(RK_REQUESTED).noargs();
+    public DirectExchange paymentsExchange() {
+        return new DirectExchange(EXCHANGE, true, false);
     }
 
     @Bean
-    public Binding bindProcessed(Queue paymentProcessedQueue, Exchange paymentsExchange) {
-        return BindingBuilder.bind(paymentProcessedQueue).to(paymentsExchange).with(RK_PROCESSED).noargs();
-    }
-    @Bean
-    public MessageConverter messageConverter(ObjectMapper objectMapper) {
-        return new JacksonJsonMessageConverter(String.valueOf(objectMapper));
+    public Queue paymentRequestedQueue() {
+        return QueueBuilder.durable(Q_REQUESTED).build();
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory cf, MessageConverter mc) {
-        RabbitTemplate rt = new RabbitTemplate(cf);
-        rt.setMessageConverter(mc);
-        return rt;
+    public Queue paymentProcessedQueue() {
+        return QueueBuilder.durable(Q_PROCESSED).build();
     }
 
+    @Bean
+    public Binding bindingRequested(DirectExchange paymentsExchange, Queue paymentRequestedQueue) {
+        return BindingBuilder.bind(paymentRequestedQueue)
+                .to(paymentsExchange)
+                .with(RK_REQUESTED);
+    }
+
+    @Bean
+    public Binding bindingProcessed(DirectExchange paymentsExchange, Queue paymentProcessedQueue) {
+        return BindingBuilder.bind(paymentProcessedQueue)
+                .to(paymentsExchange)
+                .with(RK_PROCESSED);
+    }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory cf, MessageConverter converter) {
+        var tpl = new RabbitTemplate(cf);
+        tpl.setMessageConverter(converter);
+        tpl.setExchange(EXCHANGE);
+        return tpl;
+    }
 
     @Bean
     public RabbitListenerContainerFactory<?> rabbitListenerContainerFactory(

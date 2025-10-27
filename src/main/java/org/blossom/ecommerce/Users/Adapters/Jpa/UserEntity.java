@@ -74,4 +74,5 @@ public class UserEntity {
     @Column(nullable = false, length = 20)
     private Status status;
 
+
 }

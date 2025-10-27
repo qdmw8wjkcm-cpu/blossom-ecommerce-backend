@@ -5,9 +5,18 @@ spring:
   config:
     activate:
       on-profile: prod
-
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbit}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    stream:
+      host: ${RABBITMQ_HOST:rabbit}
+      port: ${RABBITMQ_STREAM_PORT:5552}
+      username: ${RABBITMQ_USER:guest}
+      password: ${RABBITMQ_PASSWORD:guest}
   datasource:
-    url: ${DB_URL}
+    url: ${DB_URL:jdbc:postgresql://postgres:5432/ecommerce}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -21,7 +30,6 @@ spring:
       ddl-auto: validate
     show-sql: false
     properties:
-      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
       hibernate.format_sql: false
 
 # Logging controlado
